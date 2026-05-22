@@ -1,10 +1,9 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import {
   ArrowRight, Shield, Zap, Database, GitBranch,
   Building2, Scale, FileSearch, Terminal, ChevronDown,
   CheckCircle, Globe, Clock
 } from 'lucide-react'
-import { supabase } from '../lib/supabase'
 import type { Service } from '../types'
 
 interface HomeProps {
@@ -16,13 +15,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   automatizacion: <Terminal className="w-6 h-6" />,
   consultoria: <FileSearch className="w-6 h-6" />,
   general: <Zap className="w-6 h-6" />,
-}
-
-const CATEGORY_LABELS: Record<string, string> = {
-  arquitectura: 'Arquitectura de Plataformas',
-  automatizacion: 'Automatización de Procesos',
-  consultoria: 'Consultoría Técnica',
-  general: 'General',
+  desarrollo: <Database className="w-6 h-6" />,
 }
 
 function StatCounter({ value, label }: { value: string; label: string }) {
@@ -42,24 +35,43 @@ function GlowCard({ children, className = '' }: { children: React.ReactNode; cla
         hover:shadow-[0_0_30px_rgba(0,229,255,0.12)] ${className}`}
     >
       <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-10 h-full">{children}</div>
     </div>
   )
 }
 
 export default function Home({ onNavigate }: HomeProps) {
-  const [services, setServices] = useState<Service[]>([])
   const heroRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    supabase
-      .from('services')
-      .select('*')
-      .order('display_order')
-      .then(({ data }) => {
-        if (data) setServices(data)
-      })
-  }, [])
+  const defaultServices: Service[] = [
+    {
+      id: '1',
+      title: 'Desarrollo de Software',
+      description: 'Python, integraciones avanzadas de bases de datos.',
+      duration_minutes: 60,
+      category: 'desarrollo',
+      display_order: 1,
+      created_at: '',
+    },
+    {
+      id: '2',
+      title: 'Automatización de Flujos',
+      description: 'Salesforce, Make, Zapier.',
+      duration_minutes: 45,
+      category: 'automatizacion',
+      display_order: 2,
+      created_at: '',
+    },
+    {
+      id: '3',
+      title: 'Consultoría de Procesos',
+      description: 'Análisis y optimización de flujos operativos críticos.',
+      duration_minutes: 60,
+      category: 'consultoria',
+      display_order: 3,
+      created_at: '',
+    },
+  ]
+  const [services] = useState<Service[]>(defaultServices)
 
   return (
     <div className="min-h-screen bg-[#030712] text-white">
@@ -158,33 +170,28 @@ export default function Home({ onNavigate }: HomeProps) {
 
           <div className="grid md:grid-cols-3 gap-6">
             {services.map((service) => (
-              <GlowCard key={service.id} className="p-6 cursor-pointer">
-                <div className="flex items-start justify-between mb-5">
-                  <div className="p-2.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-                    {CATEGORY_ICONS[service.category] || CATEGORY_ICONS.general}
+              <GlowCard key={service.id} className="p-6 cursor-pointer h-full">
+                <div className="flex flex-col h-full">
+                  <div className="flex items-center gap-4 mb-5">
+                    <div className="p-2.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex-shrink-0">
+                      {CATEGORY_ICONS[service.category] || CATEGORY_ICONS.general}
+                    </div>
+                    <h3 className="text-white font-bold text-xl leading-tight">
+                      {service.title}
+                    </h3>
                   </div>
-                  <span className="text-xs text-gray-600 bg-gray-800/80 border border-gray-700/50 px-2 py-1 rounded tracking-wider">
-                    {service.duration_minutes} min
-                  </span>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1">
+                    {service.description}
+                  </p>
+
+                  <button
+                    onClick={() => onNavigate('booking')}
+                    className="w-full py-2.5 text-sm font-semibold tracking-wider uppercase text-cyan-400 border border-cyan-500/30 rounded hover:bg-cyan-500/10 hover:border-cyan-400/60 transition-all duration-200 flex items-center justify-center gap-2 group"
+                  >
+                    Agendar esta sesión
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </button>
                 </div>
-
-                <p className="text-xs text-emerald-400/80 font-medium tracking-widest uppercase mb-2">
-                  {CATEGORY_LABELS[service.category]}
-                </p>
-                <h3 className="text-white font-bold text-lg leading-tight mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                  {service.description}
-                </p>
-
-                <button
-                  onClick={() => onNavigate('booking')}
-                  className="w-full py-2.5 text-sm font-semibold tracking-wider uppercase text-cyan-400 border border-cyan-500/30 rounded hover:bg-cyan-500/10 hover:border-cyan-400/60 transition-all duration-200 flex items-center justify-center gap-2 group"
-                >
-                  Agendar esta sesión
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </button>
               </GlowCard>
             ))}
           </div>

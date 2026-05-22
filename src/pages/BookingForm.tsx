@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { ArrowLeft, CheckCircle, Clock, Cpu, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowLeft, CheckCircle, Cpu, AlertCircle } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import type { Service, BookingInsert } from '../types'
 
@@ -14,6 +14,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   automatizacion: 'Automatización de Procesos',
   consultoria: 'Consultoría Técnica',
   general: 'General',
+  desarrollo: 'Desarrollo de Software',
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -21,6 +22,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   automatizacion: 'text-emerald-400 border-emerald-500/20 bg-emerald-500/10',
   consultoria: 'text-amber-400 border-amber-500/20 bg-amber-500/10',
   general: 'text-blue-400 border-blue-500/20 bg-blue-500/10',
+  desarrollo: 'text-cyan-400 border-cyan-500/20 bg-cyan-500/10',
 }
 
 function GlowCard({ children, className = '', selected = false, onClick }: {
@@ -97,7 +99,36 @@ const TIME_SLOTS = [
 
 export default function BookingForm({ onNavigate }: BookingFormProps) {
   const [step, setStep] = useState<FormStep>('select')
-  const [services, setServices] = useState<Service[]>([])
+  const defaultServices: Service[] = [
+    {
+      id: '1',
+      title: 'Desarrollo de Software',
+      description: 'Python, integraciones avanzadas de bases de datos.',
+      duration_minutes: 60,
+      category: 'desarrollo',
+      display_order: 1,
+      created_at: '',
+    },
+    {
+      id: '2',
+      title: 'Automatización de Flujos',
+      description: 'Salesforce, Make, Zapier.',
+      duration_minutes: 45,
+      category: 'automatizacion',
+      display_order: 2,
+      created_at: '',
+    },
+    {
+      id: '3',
+      title: 'Consultoría de Procesos',
+      description: 'Análisis y optimización de flujos operativos críticos.',
+      duration_minutes: 60,
+      category: 'consultoria',
+      display_order: 3,
+      created_at: '',
+    },
+  ]
+  const [services] = useState<Service[]>(defaultServices)
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -114,15 +145,7 @@ export default function BookingForm({ onNavigate }: BookingFormProps) {
     preferred_time: '',
   })
 
-  useEffect(() => {
-    supabase
-      .from('services')
-      .select('*')
-      .order('display_order')
-      .then(({ data }) => {
-        if (data) setServices(data)
-      })
-  }, [])
+
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -280,10 +303,6 @@ export default function BookingForm({ onNavigate }: BookingFormProps) {
                   <div className={`px-2 py-0.5 rounded text-xs font-bold tracking-widest uppercase border ${CATEGORY_COLORS[service.category]}`}>
                     {CATEGORY_LABELS[service.category]}
                   </div>
-                  <div className="ml-auto flex items-center gap-1.5 text-gray-600 text-xs flex-shrink-0">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>{service.duration_minutes} min</span>
-                  </div>
                 </div>
                 <h3 className="text-white font-bold text-lg mt-3 leading-tight">{service.title}</h3>
                 <p className="text-gray-500 text-sm mt-2 leading-relaxed">{service.description}</p>
@@ -319,7 +338,6 @@ export default function BookingForm({ onNavigate }: BookingFormProps) {
                     {CATEGORY_LABELS[selectedService.category]}
                   </div>
                   <span className="text-white text-sm font-medium">{selectedService.title}</span>
-                  <span className="ml-auto text-gray-600 text-xs">{selectedService.duration_minutes} min</span>
                 </div>
               </GlowCard>
             )}

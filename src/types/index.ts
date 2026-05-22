@@ -3,7 +3,7 @@ export interface NavLink {
   href: string
 }
 
-export type ServiceCategory = 'arquitectura' | 'automatizacion' | 'consultoria' | 'general'
+export type ServiceCategory = 'arquitectura' | 'automatizacion' | 'consultoria' | 'desarrollo' | 'general'
 
 export interface Service {
   id: string
