@@ -1,17 +1,18 @@
 export default function Footer() {
-  const currentYear = new Date().getFullYear()
-
   return (
-    <footer className="py-12 border-t border-white/5 text-center bg-black/20">
-      <p className="text-[9px] font-black uppercase tracking-[0.4em] text-gray-600 mb-4">
-        NEXXUV DIGITAL INFRASTRUCTURE
-      </p>
-      <p className="text-gray-500 text-xs max-w-2xl mx-auto px-6 font-light leading-relaxed">
-        Nexxuv es una marca comercial operada por Millahual Servicios Integrales SpA. Temuco, Región de la Araucanía, Chile.
-      </p>
-      <p className="text-gray-600 text-[10px] mt-4">
-        &copy; {currentYear} Millahual Servicios Integrales SpA. Todos los derechos reservados.
-      </p>
+    <footer className="border-t border-gray-800/60 py-8 px-6">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className="text-white font-bold tracking-widest text-sm">
+            NEX<span className="text-cyan-400">XUV</span>
+          </span>
+          <span className="text-gray-700 text-xs">·</span>
+          <span className="text-gray-600 text-xs">Millahual Servicios Integrales SpA</span>
+        </div>
+        <p className="text-gray-700 text-xs tracking-wide">
+          © {new Date().getFullYear()} NEXXUV · Ingeniería de Automatización · Chile
+        </p>
+      </div>
     </footer>
   )
 }
