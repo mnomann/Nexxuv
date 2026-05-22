@@ -45,7 +45,7 @@ No hay multiples rutas. `App.tsx` usa `BrowserRouter` pero renderiza unicamente 
 
 ### Tailwind CSS v4
 - Los tokens de diseno se definen con la directiva `@theme` en bloque en `src/index.css`. NO modificar archivos `tailwind.config.*` porque no existen.
-- Paleta: Sky-600 (`#0284C7`) como color accent. Slate para neutros.
+- Paleta: Cyan (`#00e5ff`) como color accent. Emerald (`#10b981`) como secundario. Fondo oscuro (`#030712`).
 
 ### Build
 `npm run build` ejecuta DOS pasos: `tsc -b` (type-check de todo el proyecto) y luego `vite build`. Si hay errores de tipo, el build falla.
